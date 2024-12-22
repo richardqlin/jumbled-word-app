@@ -19,35 +19,26 @@ def index():
         db.words.insert_one(doc)
         return redirect('/')
 
-
 @app.route('/play', methods = ['GET','POST'])
 def play():
     find = db.words.find({})
     words = [x for x in find]
-    
     correctwords = words[:]
-    
     if request.method == 'GET':
         for w in words:
             a = list(w['word'])
             shuffle(a)
             b = ''.join(a)
             w['word'] = b
-        
-     
-        print('hi',words)
         return render_template('play_game.html', words = words)
     if request.method == 'POST':
         score = 0
         wordlist = dict(request.form.items())
         guess = [wordlist[x] for x in wordlist]
-        
         l = len(guess)
-
         for i in range(l):
             if guess[i] == correctwords[i]['word']:
                 score += 1
-
         return render_template('result.html', score = score, correct = correctwords, guess = guess)
 
     
